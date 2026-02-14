@@ -61,6 +61,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/revplay/register/**").permitAll()
                         .requestMatchers("/revplay/login/**").permitAll()
+                        .requestMatchers("/revplay/songs/upload").hasRole("ARTIST")
                         .requestMatchers("/revplay/artist-profile/**").hasRole("ARTIST")
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/", "/health").permitAll()
