@@ -1,6 +1,7 @@
 package com.revature.RevPlay.transformer;
 
 import com.revature.RevPlay.dto.request.SongRequest;
+import com.revature.RevPlay.dto.response.SongDetailsResponse;
 import com.revature.RevPlay.dto.response.SongResponse;
 import com.revature.RevPlay.model.Artist;
 import com.revature.RevPlay.model.Song;
@@ -31,6 +32,37 @@ public class SongTransformer {
                 .albumId(song.getAlbum().getId())
                 .albumName(song.getAlbum().getAlbumName())
                 .visibility(song.getVisibility())
+                .build();
+    }
+
+    public static SongDetailsResponse songToSongDetailsResponse(Song song, SongDetailsResponse.ArtistMini artistMini, SongDetailsResponse.AlbumMini albumMini){
+        return SongDetailsResponse.builder()
+                .id(song.getId())
+                .title(song.getTitle())
+                .genre(song.getGenre())
+                .duration(song.getDuration())
+                .audioUrl(song.getAudioUrl())
+                .coverImageUrl(song.getCoverImageUrl())
+                .releaseDate(song.getReleaseDate())
+                .artist(artistMini)
+                .album(albumMini)
+                .build();
+    }
+
+    public static SongDetailsResponse.ArtistMini songToArtistMini(Song song){
+        return SongDetailsResponse.ArtistMini.builder()
+                .id(song.getArtist().getId())
+                .artistName(song.getArtist().getArtistName())
+                .profilePicture(song.getArtist().getProfilePicture())
+                .build();
+    }
+
+    public static SongDetailsResponse.AlbumMini songToAlbumMini(Song song){
+        return SongDetailsResponse.AlbumMini.builder()
+                .id(song.getAlbum().getId())
+                .albumName(song.getAlbum().getAlbumName())
+                .coverArtUrl(song.getAlbum().getCoverArtUrl())
+                .releaseDate(song.getAlbum().getReleaseDate())
                 .build();
     }
 }

@@ -17,6 +17,7 @@ public interface SongRepository extends JpaRepository<Song, Long>, JpaSpecificat
     long countByAlbumId(Long albumId);
     List<Song> findByVisibilityOrderByIdDesc(Visibility visibility);
     Page<Song> findByVisibility(Visibility visibility, Pageable pageable);
+    List<Song> findByArtistIdAndVisibility(Long artistId, Visibility visibility);
 
     @Query("""
         select s from Song s

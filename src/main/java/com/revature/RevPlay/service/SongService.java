@@ -4,6 +4,7 @@ import com.revature.RevPlay.Enum.Visibility;
 import com.revature.RevPlay.dto.request.SongRequest;
 import com.revature.RevPlay.dto.request.SongUpdateRequest;
 import com.revature.RevPlay.dto.request.SongVisibilityRequest;
+import com.revature.RevPlay.dto.response.SongDetailsResponse;
 import com.revature.RevPlay.dto.response.SongResponse;
 import com.revature.RevPlay.model.Album;
 import com.revature.RevPlay.model.Artist;
@@ -121,6 +122,24 @@ public class SongService {
         Song saved = songRepository.save(song);
 
         return SongTransformer.songToSongResponse(saved);
+    }
+
+    public SongDetailsResponse getSongDetails(Long songId) {
+
+        Song song = songRepository.findById(songId)
+                .orElseThrow(() -> new RuntimeException("Song not found with id: " + songId));
+
+        SongDetailsResponse.ArtistMini artistMini = null;
+        if (song.getArtist() != null) {
+            artistMini = SongTransformer.songToArtistMini(song);
+        }
+
+        SongDetailsResponse.AlbumMini albumMini = null;
+        if (song.getAlbum() != null) {
+            albumMini = SongTransformer.songToAlbumMini(song);
+        }
+
+        return SongTransformer.songToSongDetailsResponse(song,artistMini,albumMini);
     }
 
 }

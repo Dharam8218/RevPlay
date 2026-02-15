@@ -14,4 +14,5 @@ public interface AlbumRepository extends JpaRepository<Album, Long> {
     Page<Album> findByAlbumNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
             String albumName, String description, Pageable pageable
     );
+
 }

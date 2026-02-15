@@ -3,6 +3,7 @@ package com.revature.RevPlay.controller;
 import com.revature.RevPlay.dto.request.SongRequest;
 import com.revature.RevPlay.dto.request.SongUpdateRequest;
 import com.revature.RevPlay.dto.request.SongVisibilityRequest;
+import com.revature.RevPlay.dto.response.SongDetailsResponse;
 import com.revature.RevPlay.dto.response.SongResponse;
 import com.revature.RevPlay.service.SongService;
 import lombok.RequiredArgsConstructor;
@@ -67,6 +68,11 @@ public class SongController {
             @RequestBody SongVisibilityRequest request
     ) {
         return ResponseEntity.ok(songService.updateVisibility(songId, artistId, request));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<SongDetailsResponse> getSongDetails(@PathVariable Long id) {
+        return ResponseEntity.ok(songService.getSongDetails(id));
     }
 }
 

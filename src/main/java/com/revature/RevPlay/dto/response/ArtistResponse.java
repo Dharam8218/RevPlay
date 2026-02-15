@@ -1,5 +1,6 @@
 package com.revature.RevPlay.dto.response;
 
+import com.revature.RevPlay.Enum.Genre;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,7 +10,7 @@ public class ArtistResponse {
 
     private Long id;
     private String artistName;
-    private String genre;
+    private Genre genre;
     private String bio;
     private String bannerImage;
     private String profilePicture;

@@ -1,12 +1,13 @@
 package com.revature.RevPlay.dto.request;
 
+import com.revature.RevPlay.Enum.Genre;
 import lombok.Data;
 
 @Data
 public class ArtistProfileRequest {
     private String artistName;
     private String bio;
-    private String genre;
+    private Genre genre;
 
     private String profilePicture;
     private String bannerImage;

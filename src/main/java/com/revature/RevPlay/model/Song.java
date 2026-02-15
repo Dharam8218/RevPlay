@@ -26,6 +26,7 @@ public class Song {
     private String title;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Genre genre;
 
     private int duration; // seconds

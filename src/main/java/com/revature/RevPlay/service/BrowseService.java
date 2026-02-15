@@ -2,10 +2,16 @@ package com.revature.RevPlay.service;
 
 import com.revature.RevPlay.Enum.Genre;
 import com.revature.RevPlay.Enum.Visibility;
+import com.revature.RevPlay.dto.response.ArtistProfileResponse;
 import com.revature.RevPlay.dto.response.SongResponse;
+import com.revature.RevPlay.model.Album;
+import com.revature.RevPlay.model.Artist;
 import com.revature.RevPlay.model.Song;
+import com.revature.RevPlay.repository.AlbumRepository;
+import com.revature.RevPlay.repository.ArtistRepository;
 import com.revature.RevPlay.repository.SongRepository;
 import com.revature.RevPlay.spec.SongSpecifications;
+import com.revature.RevPlay.transformer.ArtistTransformer;
 import com.revature.RevPlay.transformer.SongTransformer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +28,8 @@ import java.util.List;
 public class BrowseService {
 
     private final SongRepository songRepository;
+    private final ArtistRepository artistRepository;
+    private final AlbumRepository albumRepository;
 
     public List<SongResponse> browseAllSongs() {
         return songRepository.findByVisibilityOrderByIdDesc(Visibility.PUBLIC)
@@ -112,6 +120,25 @@ public class BrowseService {
 
         return songRepository.findAll(spec, pageable)
                 .map(SongTransformer::songToSongResponse);
+    }
+
+    public ArtistProfileResponse getArtistProfile(Long artistId) {
+
+        Artist artist = artistRepository.findById(artistId)
+                .orElseThrow(() -> new RuntimeException("Artist not found with id: " + artistId));
+
+        List<Song> songs = songRepository.findByArtistIdAndVisibility(artistId, Visibility.PUBLIC);
+        List<Album> albums = albumRepository.findByArtistId(artistId);
+
+        List<ArtistProfileResponse.SongMini> songDtos = songs.stream()
+                .map(ArtistTransformer::songToSongMini)
+                .toList();
+
+        List<ArtistProfileResponse.AlbumMini> albumDtos = albums.stream()
+                .map(ArtistTransformer::albumToAlbumMini)
+                .toList();
+
+        return ArtistTransformer.artistToArtistProfileResponse(artist,songDtos,albumDtos);
     }
 
 

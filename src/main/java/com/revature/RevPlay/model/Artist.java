@@ -1,5 +1,6 @@
 package com.revature.RevPlay.model;
 
+import com.revature.RevPlay.Enum.Genre;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -22,7 +23,10 @@ public class Artist{
     private String artistName;
 
     private String bio;
-    private String genre;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Genre genre;
 
     private String profilePicture;
     private String bannerImage;
