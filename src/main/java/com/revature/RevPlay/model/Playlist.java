@@ -2,9 +2,12 @@ package com.revature.RevPlay.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -20,13 +23,16 @@ public class Playlist {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
     private String description;
 
     @Builder.Default
-    private boolean isPublic = true;
+    @Column(name = "is_public", nullable = false)
+    private boolean isPublic = false;
 
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     // Owner of playlist
@@ -41,6 +47,7 @@ public class Playlist {
             name = "playlist_songs",
             joinColumns = @JoinColumn(name = "playlist_id"),
             inverseJoinColumns = @JoinColumn(name = "song_id")
-    )
-    private Set<Song> songs = new HashSet<>();
+    )@OrderColumn(name = "song_order")
+    private List<Song> songs = new ArrayList<>();
+
 }

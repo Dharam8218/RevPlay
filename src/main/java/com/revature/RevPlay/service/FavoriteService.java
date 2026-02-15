@@ -1,6 +1,8 @@
 package com.revature.RevPlay.service;
 
 import com.revature.RevPlay.dto.response.SongResponse;
+import com.revature.RevPlay.exception.SongNotFoundException;
+import com.revature.RevPlay.exception.UserNotFoundException;
 import com.revature.RevPlay.model.Song;
 import com.revature.RevPlay.model.User;
 import com.revature.RevPlay.repository.SongRepository;
@@ -24,10 +26,10 @@ public class FavoriteService {
     public void addToFavorites(Long songId) {
         String username = SecurityUtils.getCurrentUsername();
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Song song = songRepository.findById(songId)
-                .orElseThrow(() -> new RuntimeException("Song not found"));
+                .orElseThrow(() -> new SongNotFoundException("Song not found"));
 
         user.getFavoriteSongs().add(song);
         userRepository.save(user);
@@ -37,10 +39,10 @@ public class FavoriteService {
     public void removeFromFavorites(Long songId) {
         String username = SecurityUtils.getCurrentUsername();
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Song song = songRepository.findById(songId)
-                .orElseThrow(() -> new RuntimeException("Song not found"));
+                .orElseThrow(() -> new SongNotFoundException("Song not found"));
 
         user.getFavoriteSongs().remove(song);
         userRepository.save(user);
@@ -50,7 +52,7 @@ public class FavoriteService {
     public List<SongResponse> getMyFavorites() {
         String username = SecurityUtils.getCurrentUsername();
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         return user.getFavoriteSongs().stream()
                 .map(SongTransformer::songToSongResponse)

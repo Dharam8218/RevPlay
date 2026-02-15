@@ -1,7 +1,9 @@
 package com.revature.RevPlay.transformer;
 
+import com.revature.RevPlay.dto.request.PlaylistRequest;
 import com.revature.RevPlay.dto.response.PlaylistResponse;
 import com.revature.RevPlay.model.Playlist;
+import com.revature.RevPlay.model.User;
 
 public class PlaylistTransformer {
 
@@ -23,5 +25,14 @@ public class PlaylistTransformer {
                                 : 0
                 )
                 .build();
+    }
+
+    public static Playlist playlistRequestToPlaylist(PlaylistRequest playlistRequest, User user){
+       return Playlist.builder()
+               .name(playlistRequest.getName().trim())
+               .description(playlistRequest.getDescription())
+               .isPublic(playlistRequest.isPublic())
+               .user(user)
+               .build();
     }
 }
