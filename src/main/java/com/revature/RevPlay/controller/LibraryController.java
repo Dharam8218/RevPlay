@@ -76,4 +76,22 @@ public class LibraryController {
                 browseService.browseByAlbum(albumId, page, size)
         );
     }
+
+    @GetMapping("/songs/filter")
+    public ResponseEntity<Page<SongResponse>> filterSongs(
+            @RequestParam(required = false) Genre genre,
+            @RequestParam(required = false) Long artistId,
+            @RequestParam(required = false) Long albumId,
+            @RequestParam(required = false) Integer year,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "desc") String direction
+    ) {
+        return ResponseEntity.ok(
+                browseService.filterSongs(
+                        genre, artistId, albumId, year, page, size, sortBy, direction
+                )
+        );
+    }
 }

@@ -36,9 +36,6 @@ public class Song {
 
     private LocalDate releaseDate;
 
-    private boolean publicSong = true;
-
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default
