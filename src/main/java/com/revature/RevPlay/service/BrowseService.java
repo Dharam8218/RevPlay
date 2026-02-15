@@ -2,6 +2,8 @@ package com.revature.RevPlay.service;
 
 import com.revature.RevPlay.Enum.Genre;
 import com.revature.RevPlay.Enum.Visibility;
+import com.revature.RevPlay.dto.response.AlbumDetailsResponse;
+import com.revature.RevPlay.dto.response.AlbumTrackResponse;
 import com.revature.RevPlay.dto.response.ArtistProfileResponse;
 import com.revature.RevPlay.dto.response.SongResponse;
 import com.revature.RevPlay.model.Album;
@@ -11,6 +13,7 @@ import com.revature.RevPlay.repository.AlbumRepository;
 import com.revature.RevPlay.repository.ArtistRepository;
 import com.revature.RevPlay.repository.SongRepository;
 import com.revature.RevPlay.spec.SongSpecifications;
+import com.revature.RevPlay.transformer.AlbumTransformer;
 import com.revature.RevPlay.transformer.ArtistTransformer;
 import com.revature.RevPlay.transformer.SongTransformer;
 import lombok.RequiredArgsConstructor;
@@ -140,6 +143,22 @@ public class BrowseService {
 
         return ArtistTransformer.artistToArtistProfileResponse(artist,songDtos,albumDtos);
     }
+
+    public AlbumDetailsResponse getAlbumDetails(Long albumId) {
+
+        Album album = albumRepository.findById(albumId)
+                .orElseThrow(() -> new RuntimeException("Album not found with id " + albumId));
+
+        // only PUBLIC songs visible to user
+        List<Song> tracks = songRepository.findByAlbumIdAndVisibility(albumId, Visibility.PUBLIC);
+
+        List<AlbumTrackResponse> trackResponses = tracks.stream()
+                .map(AlbumTransformer::songToAlbumTrackResponse)
+                .toList();
+
+        return AlbumTransformer.albumToAlbumDetailsResponse(album,trackResponses);
+    }
+
 
 
 }

@@ -1,6 +1,7 @@
 package com.revature.RevPlay.controller;
 
 import com.revature.RevPlay.Enum.Genre;
+import com.revature.RevPlay.dto.response.AlbumDetailsResponse;
 import com.revature.RevPlay.dto.response.ArtistProfileResponse;
 import com.revature.RevPlay.dto.response.SearchResponse;
 import com.revature.RevPlay.dto.response.SongResponse;
@@ -99,5 +100,10 @@ public class LibraryController {
     @GetMapping("/artists/{id}")
     public ResponseEntity<ArtistProfileResponse> getArtistProfile(@PathVariable Long id) {
         return ResponseEntity.ok(browseService.getArtistProfile(id));
+    }
+
+    @GetMapping("/albums/{albumId}")
+    public ResponseEntity<AlbumDetailsResponse> getAlbumDetails(@PathVariable Long albumId) {
+        return ResponseEntity.ok(browseService.getAlbumDetails(albumId));
     }
 }

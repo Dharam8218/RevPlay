@@ -46,5 +46,7 @@ public interface SongRepository extends JpaRepository<Song, Long>, JpaSpecificat
             Pageable pageable
     );
 
+    List<Song> findByAlbumIdAndVisibility(Long albumId, Visibility visibility);
+
 
 }
