@@ -1,5 +1,6 @@
 package com.revature.RevPlay.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.revature.RevPlay.Enum.Genre;
 import com.revature.RevPlay.Enum.Visibility;
 import jakarta.persistence.*;
@@ -55,5 +56,9 @@ public class Song {
     private Set<Playlist> playlists = new HashSet<>();
 
     private long playCount = 0;
+
+    @ManyToMany(mappedBy = "favoriteSongs")
+    @JsonIgnore
+    private Set<User> favoritedBy = new HashSet<>();
 }
 

@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface SongRepository extends JpaRepository<Song, Long>, JpaSpecificationExecutor<Song> {
     List<Song> findByArtistId(Long artistId);
@@ -47,6 +48,5 @@ public interface SongRepository extends JpaRepository<Song, Long>, JpaSpecificat
     );
 
     List<Song> findByAlbumIdAndVisibility(Long albumId, Visibility visibility);
-
 
 }
