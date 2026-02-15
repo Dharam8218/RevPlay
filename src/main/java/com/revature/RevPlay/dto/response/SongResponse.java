@@ -1,6 +1,7 @@
 package com.revature.RevPlay.dto.response;
 
 import com.revature.RevPlay.Enum.Genre;
+import com.revature.RevPlay.Enum.Visibility;
 import lombok.Builder;
 import lombok.Data;
 
@@ -20,5 +21,7 @@ public class SongResponse {
 
     private Long albumId;
     private String albumName;
+
+    private Visibility visibility;
 }
 

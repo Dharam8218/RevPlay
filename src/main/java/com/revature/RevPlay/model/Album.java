@@ -27,10 +27,10 @@ public class Album {
 
     private LocalDate releaseDate;
 
-    private String coverImage;
+    private String coverArtUrl;
 
     @ManyToOne
-    @JoinColumn(name = "artist_id")
+    @JoinColumn(name = "artist_id", nullable = false)
     private Artist artist;
 
     @OneToMany(mappedBy = "album", cascade = CascadeType.ALL)

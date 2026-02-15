@@ -5,20 +5,10 @@ import com.revature.RevPlay.dto.request.ArtistRequest;
 import com.revature.RevPlay.dto.response.ArtistResponse;
 import com.revature.RevPlay.model.Artist;
 import com.revature.RevPlay.model.User;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.HashSet;
 
 public class ArtistTransformer {
 
-    @Bean
-    public static PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    public static Artist artistRequestToArtist(ArtistRequest artistRequest, User user){
+    public static Artist artistRequestToArtist(ArtistRequest artistRequest, User user) {
         return Artist.builder()
                 .artistName(artistRequest.getArtistName())
                 .genre(artistRequest.getGenre())
@@ -26,7 +16,7 @@ public class ArtistTransformer {
                 .build();
     }
 
-    public static Artist setArtistProfile(Artist artist, User user, ArtistProfileRequest request){
+    public static Artist setArtistProfile(Artist artist, User user, ArtistProfileRequest request) {
 
         return artist.builder()
                 .id(artist.getId())

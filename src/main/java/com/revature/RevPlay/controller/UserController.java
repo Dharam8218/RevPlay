@@ -2,6 +2,7 @@ package com.revature.RevPlay.controller;
 
 import com.revature.RevPlay.dto.request.ArtistRequest;
 import com.revature.RevPlay.dto.request.LoginRequest;
+import com.revature.RevPlay.dto.request.UserProfileUpdateRequest;
 import com.revature.RevPlay.dto.request.UserRequest;
 import com.revature.RevPlay.dto.response.LoginResponse;
 import com.revature.RevPlay.dto.response.UserResponse;
@@ -10,6 +11,7 @@ import com.revature.RevPlay.repository.UserRepository;
 import com.revature.RevPlay.security.JwtUtils;
 import com.revature.RevPlay.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,10 +19,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -68,4 +69,25 @@ public class UserController {
                 new LoginResponse(jwt, user.getUsername(), user.getEmail(), roles)
         );
     }
+
+    @PutMapping(value = "/update-profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<UserResponse> updateMyProfile(
+            @RequestParam Long userId,
+            @RequestParam("data") String data,
+            @RequestParam(value = "profileImage", required = false) MultipartFile profileImage
+    ) throws Exception {
+
+        UserProfileUpdateRequest request =
+                new ObjectMapper().readValue(data, UserProfileUpdateRequest.class);
+
+        return ResponseEntity.ok(
+                userService.updateProfile(userId, request, profileImage)
+        );
+    }
+
+    @GetMapping("/get-profile")
+    public ResponseEntity<UserResponse> getMyProfile(@RequestParam Long userId) {
+        return ResponseEntity.ok(userService.getProfile(userId));
+    }
+
 }

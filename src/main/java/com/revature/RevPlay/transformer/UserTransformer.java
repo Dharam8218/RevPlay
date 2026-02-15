@@ -52,7 +52,10 @@ public class UserTransformer {
     public static UserResponse userToUserResponse(User user) {
         return UserResponse
                 .builder()
+                .id(user.getId())
+                .profilePicture(user.getProfilePicture())
                 .username(user.getUsername())
+                .displayName(user.getDisplayName())
                 .email(user.getEmail())
                 .bio(user.getBio()).build();
 

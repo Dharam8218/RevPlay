@@ -2,9 +2,9 @@ package com.revature.RevPlay.service;
 
 import com.revature.RevPlay.Enum.RoleName;
 import com.revature.RevPlay.dto.request.ArtistRequest;
+import com.revature.RevPlay.dto.request.UserProfileUpdateRequest;
 import com.revature.RevPlay.dto.request.UserRequest;
 import com.revature.RevPlay.dto.response.UserResponse;
-import com.revature.RevPlay.model.Artist;
 import com.revature.RevPlay.model.Role;
 import com.revature.RevPlay.model.User;
 import com.revature.RevPlay.repository.ArtistRepository;
@@ -12,10 +12,10 @@ import com.revature.RevPlay.repository.RoleRepository;
 import com.revature.RevPlay.repository.UserRepository;
 import com.revature.RevPlay.transformer.ArtistTransformer;
 import com.revature.RevPlay.transformer.UserTransformer;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @Service
@@ -24,6 +24,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final ArtistRepository artistRepository;
+    private final CloudinaryService cloudinaryService;
 
 
     public UserResponse registerUser(UserRequest request) {
@@ -43,8 +44,42 @@ public class UserService {
 
         UserResponse savedUserResponse = UserTransformer.userToUserResponse(savedUser);
 
-        artistRepository.save(ArtistTransformer.artistRequestToArtist(request,savedUser));
+        artistRepository.save(ArtistTransformer.artistRequestToArtist(request, savedUser));
         return savedUserResponse;
     }
+
+    @Transactional
+    public UserResponse updateProfile(
+            Long userId,
+            UserProfileUpdateRequest req,
+            MultipartFile profileImage
+    ) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (req.getDisplayName() != null && !req.getDisplayName().isBlank()) {
+            user.setDisplayName(req.getDisplayName().trim());
+        }
+
+        if (req.getBio() != null) {
+            user.setBio(req.getBio());
+        }
+
+        // Cloudinary upload
+        if (profileImage != null && !profileImage.isEmpty()) {
+            String imageUrl = cloudinaryService.uploadFile(profileImage, "profile_images");
+            user.setProfilePicture(imageUrl);
+        }
+
+        return UserTransformer.userToUserResponse(user);
+    }
+
+    public UserResponse getProfile(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return UserTransformer.userToUserResponse(user);
+    }
+
 }
 
