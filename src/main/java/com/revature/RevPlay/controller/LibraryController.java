@@ -1,5 +1,6 @@
 package com.revature.RevPlay.controller;
 
+import com.revature.RevPlay.Enum.Genre;
 import com.revature.RevPlay.dto.response.SearchResponse;
 import com.revature.RevPlay.dto.response.SongResponse;
 import com.revature.RevPlay.service.BrowseService;
@@ -41,5 +42,38 @@ public class LibraryController {
             @RequestParam(defaultValue = "10") int size
     ) {
         return ResponseEntity.ok(searchService.search(q, page, size));
+    }
+
+    @GetMapping("/genre/{genre}")
+    public ResponseEntity<Page<SongResponse>> browseByGenre(
+            @PathVariable Genre genre,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(
+                browseService.browseByGenre(genre, page, size)
+        );
+    }
+
+    @GetMapping("/artist/{artistId}")
+    public ResponseEntity<Page<SongResponse>> browseByArtist(
+            @PathVariable Long artistId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(
+                browseService.browseByArtist(artistId, page, size)
+        );
+    }
+
+    @GetMapping("/album/{albumId}")
+    public ResponseEntity<Page<SongResponse>> browseByAlbum(
+            @PathVariable Long albumId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(
+                browseService.browseByAlbum(albumId, page, size)
+        );
     }
 }

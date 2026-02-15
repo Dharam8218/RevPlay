@@ -1,5 +1,6 @@
 package com.revature.RevPlay.service;
 
+import com.revature.RevPlay.Enum.Genre;
 import com.revature.RevPlay.Enum.Visibility;
 import com.revature.RevPlay.dto.response.SongResponse;
 import com.revature.RevPlay.model.Song;
@@ -39,5 +40,41 @@ public class BrowseService {
                 .map(SongTransformer::songToSongResponse);
     }
 
+
+    public Page<SongResponse> browseByGenre(
+            Genre genre,
+            int page,
+            int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+
+        return songRepository
+                .findByGenreAndVisibility(genre, Visibility.PUBLIC, pageable)
+                .map(SongTransformer::songToSongResponse);
+    }
+
+    public Page<SongResponse> browseByArtist(
+            Long artistId,
+            int page,
+            int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return songRepository
+                .findByArtistIdAndVisibility(artistId, Visibility.PUBLIC, pageable)
+                .map(SongTransformer::songToSongResponse);
+    }
+
+    public Page<SongResponse> browseByAlbum(
+            Long albumId,
+            int page,
+            int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return songRepository
+                .findByAlbumIdAndVisibility(albumId, Visibility.PUBLIC, pageable)
+                .map(SongTransformer::songToSongResponse);
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.revature.RevPlay.repository;
 
+import com.revature.RevPlay.Enum.Genre;
 import com.revature.RevPlay.Enum.Visibility;
 import com.revature.RevPlay.model.Song;
 import org.springframework.data.domain.Page;
@@ -24,4 +25,24 @@ public interface SongRepository extends JpaRepository<Song, Long> {
                or lower(s.album.albumName) like lower(concat('%', :q, '%')))
     """)
     Page<Song> searchPublicSongs(String q, Visibility visibility, Pageable pageable);
+
+    Page<Song> findByGenreAndVisibility(
+            Genre genre,
+            Visibility visibility,
+            Pageable pageable
+    );
+
+    Page<Song> findByArtistIdAndVisibility(
+            Long artistId,
+            Visibility visibility,
+            Pageable pageable
+    );
+
+    Page<Song> findByAlbumIdAndVisibility(
+            Long albumId,
+            Visibility visibility,
+            Pageable pageable
+    );
+
+
 }
