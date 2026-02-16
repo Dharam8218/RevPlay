@@ -5,6 +5,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
 
@@ -14,4 +15,5 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
     );
 
     List<Playlist> findByUserUsernameOrderByCreatedAtDesc(String username);
+    Optional<Playlist> findByIdAndUser_Id(Long playlistId, Long userId);
 }
