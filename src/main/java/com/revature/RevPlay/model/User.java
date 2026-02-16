@@ -1,5 +1,6 @@
 package com.revature.RevPlay.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.revature.RevPlay.Enum.Gender;
 import jakarta.persistence.*;
 import lombok.*;
@@ -72,4 +73,8 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "song_id")
     )
     private Set<Song> favoriteSongs = new HashSet<>();
+
+    @ManyToMany(mappedBy = "followers")
+    @JsonIgnore
+    private Set<Playlist> followedPlaylists = new HashSet<>();
 }

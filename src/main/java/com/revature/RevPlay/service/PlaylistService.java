@@ -1,6 +1,7 @@
 package com.revature.RevPlay.service;
 
 import com.revature.RevPlay.dto.request.PlaylistRequest;
+import com.revature.RevPlay.dto.request.PlaylistUpdateRequest;
 import com.revature.RevPlay.dto.response.PlaylistResponse;
 import com.revature.RevPlay.exception.PlaylistNotFoundException;
 import com.revature.RevPlay.exception.SongNotFoundException;
@@ -107,6 +108,119 @@ public class PlaylistService {
 
         return playlistRepository.findByUserId(user.getId(), pageable)
                 .map(PlaylistTransformer::playlistToPlaylistResponse);
+    }
+
+    @Transactional
+    public PlaylistResponse updatePlaylist(Long playlistId, PlaylistUpdateRequest request) {
+        String username = SecurityUtils.getCurrentUsername();
+        User user = userRepository.findByUsername(username).orElseThrow(
+                () -> new UserNotFoundException("User not found")
+        );
+        Playlist playlist = playlistRepository.findById(playlistId)
+                .orElseThrow(() -> new PlaylistNotFoundException("Playlist not found"));
+
+        if (playlist.getUser() == null || !playlist.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("You are not allowed to update this playlist");
+        }
+
+        if (request.getName() != null && !request.getName().trim().isEmpty()) {
+            playlist.setName(request.getName().trim());
+        }
+
+        if (request.getDescription() != null) {
+            playlist.setDescription(request.getDescription().trim());
+        }
+
+        if (request.getIsPublic() != null) {
+            playlist.setPublic(request.getIsPublic());
+        }
+
+        Playlist saved = playlistRepository.save(playlist);
+
+        return PlaylistTransformer.playlistToPlaylistResponse(saved);
+    }
+
+    @Transactional
+    public void deleteMyPlaylist(Long playlistId) {
+
+        String username = SecurityUtils.getCurrentUsername();
+        User user = userRepository.findByUsername(username).orElseThrow(
+                () -> new UserNotFoundException("User not found")
+        );
+
+        Playlist playlist = playlistRepository.findById(playlistId)
+                .orElseThrow(() -> new PlaylistNotFoundException("Playlist not found"));
+
+
+        if (playlist.getUser() == null || !playlist.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("You are not allowed to delete this playlist");
+        }
+
+        if (playlist.getSongs() != null) {
+            playlist.getSongs().clear();
+        }
+
+        playlistRepository.delete(playlist);
+    }
+
+    public Page<PlaylistResponse> getPublicPlaylists(int page, int size, String sortBy, String direction) {
+
+        Sort sort = direction.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        String username = SecurityUtils.getCurrentUsername();
+        User user = userRepository.findByUsername(username).orElseThrow(
+                () -> new UserNotFoundException("User not found")
+        );
+
+        Page<Playlist> playlists = playlistRepository.findByIsPublicTrueAndUser_IdNot(user.getId(), pageable);
+
+        return playlists.map(PlaylistTransformer::playlistToPlaylistResponse);
+    }
+
+    @Transactional
+    public String followPlaylist(Long playlistId) {
+
+        String  username = SecurityUtils.getCurrentUsername();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        Playlist playlist = playlistRepository.findById(playlistId)
+                .orElseThrow(() -> new PlaylistNotFoundException("Playlist not found"));
+
+        if (!playlist.isPublic()) {
+            throw new RuntimeException("You can follow only public playlists");
+        }
+
+        if (playlist.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("You cannot follow your own playlist");
+        }
+
+        boolean added = playlist.getFollowers().add(user);
+        if (!added) return "Already followed";
+
+        playlistRepository.save(playlist);
+        return "Playlist followed";
+    }
+
+    @Transactional
+    public String unfollowPlaylist(Long playlistId) {
+
+        String username = SecurityUtils.getCurrentUsername();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        Playlist playlist = playlistRepository.findById(playlistId)
+                .orElseThrow(() -> new PlaylistNotFoundException("Playlist not found"));
+
+        boolean removed = playlist.getFollowers().remove(user);
+        if (!removed) return "Not following";
+
+        playlistRepository.save(playlist);
+        return "Playlist unfollowed";
     }
 
 }

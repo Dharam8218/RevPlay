@@ -6,7 +6,9 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -48,5 +50,13 @@ public class Playlist {
     )
     @OrderColumn(name = "song_order")
     private List<Song> songs = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "playlist_followers",
+            joinColumns = @JoinColumn(name = "playlist_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> followers = new HashSet<>();
 
 }
