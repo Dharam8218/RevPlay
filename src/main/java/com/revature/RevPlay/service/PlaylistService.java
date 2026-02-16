@@ -14,6 +14,10 @@ import com.revature.RevPlay.repository.UserRepository;
 import com.revature.RevPlay.transformer.PlaylistTransformer;
 import com.revature.RevPlay.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -88,6 +92,21 @@ public class PlaylistService {
         Playlist saved = playlistRepository.save(playlist);
 
         return PlaylistTransformer.playlistToPlaylistResponse(saved);
+    }
+
+    public Page<PlaylistResponse> getMyPlaylists(int page, int size, String sortBy, String direction) {
+        String username = SecurityUtils.getCurrentUsername();
+        User user = userRepository.findByUsername(username).orElseThrow(
+                () -> new UserNotFoundException("User not found")
+        );
+        Sort sort = direction.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        return playlistRepository.findByUserId(user.getId(), pageable)
+                .map(PlaylistTransformer::playlistToPlaylistResponse);
     }
 
 }

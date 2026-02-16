@@ -10,23 +10,27 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface SongRepository extends JpaRepository<Song, Long>, JpaSpecificationExecutor<Song> {
     List<Song> findByArtistId(Long artistId);
+
     boolean existsByIdAndArtistId(Long songId, Long artistId);
+
     long countByAlbumId(Long albumId);
+
     List<Song> findByVisibilityOrderByIdDesc(Visibility visibility);
+
     Page<Song> findByVisibility(Visibility visibility, Pageable pageable);
+
     List<Song> findByArtistIdAndVisibility(Long artistId, Visibility visibility);
 
     @Query("""
-        select s from Song s
-        where s.visibility = :visibility
-          and (lower(s.title) like lower(concat('%', :q, '%'))
-               or lower(s.artist.artistName) like lower(concat('%', :q, '%'))
-               or lower(s.album.albumName) like lower(concat('%', :q, '%')))
-    """)
+                select s from Song s
+                where s.visibility = :visibility
+                  and (lower(s.title) like lower(concat('%', :q, '%'))
+                       or lower(s.artist.artistName) like lower(concat('%', :q, '%'))
+                       or lower(s.album.albumName) like lower(concat('%', :q, '%')))
+            """)
     Page<Song> searchPublicSongs(String q, Visibility visibility, Pageable pageable);
 
     Page<Song> findByGenreAndVisibility(

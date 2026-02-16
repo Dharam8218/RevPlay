@@ -5,6 +5,7 @@ import com.revature.RevPlay.dto.request.PlaylistRequest;
 import com.revature.RevPlay.dto.response.PlaylistResponse;
 import com.revature.RevPlay.service.PlaylistService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,4 +52,15 @@ public class PlaylistController {
     ) {
         return ResponseEntity.ok(playlistService.removeSongFromPlaylist(playlistId, songId));
     }
+
+    @GetMapping
+    public ResponseEntity<Page<PlaylistResponse>> getMyPlaylists(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String direction
+    ) {
+        return ResponseEntity.ok(playlistService.getMyPlaylists(page, size, sortBy, direction));
+    }
+
 }
