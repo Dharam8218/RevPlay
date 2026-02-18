@@ -14,11 +14,10 @@ public class ArtistController {
 
     private final ArtistService artistService;
 
-    @PutMapping("/artist-profile/{userId}")
+    @PutMapping("/artist-profile")
     public ResponseEntity<ArtistResponse> updateProfile(
-            @PathVariable Long userId,
             @RequestBody ArtistProfileRequest request) {
 
-        return ResponseEntity.ok(artistService.updateArtistProfile(userId, request));
+        return ResponseEntity.ok(artistService.updateArtistProfile(request));
     }
 }

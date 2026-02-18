@@ -19,5 +19,4 @@ public class ArtistRequest {
     private Genre genre;
     private Gender gender;
     private String displayName;
-    private String profilePicture;
 }

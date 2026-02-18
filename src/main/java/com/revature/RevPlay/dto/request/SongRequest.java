@@ -3,6 +3,8 @@ package com.revature.RevPlay.dto.request;
 import com.revature.RevPlay.Enum.Genre;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 public class SongRequest {
     private String title;
@@ -12,4 +14,5 @@ public class SongRequest {
     private String coverArtUrl;  // optional
     private Long albumId; // optional
     private Long artistId;
+    private LocalDate releaseDate;
 }

@@ -27,7 +27,6 @@ public class UserTransformer {
                 .password(passwordEncoder().encode(userRequest.getPassword()))
                 .displayName(userRequest.getDisplayName())
                 .bio(userRequest.getBio())
-                .profilePicture(userRequest.getProfilePicture())
                 .enabled(true)
                 .roles(new HashSet<>())
                 .build();
@@ -43,7 +42,6 @@ public class UserTransformer {
                 .password(passwordEncoder().encode(artistRequest.getPassword()))
                 .displayName(artistRequest.getDisplayName())
                 .bio(artistRequest.getBio())
-                .profilePicture(artistRequest.getProfilePicture())
                 .enabled(true)
                 .roles(new HashSet<>())
                 .build();

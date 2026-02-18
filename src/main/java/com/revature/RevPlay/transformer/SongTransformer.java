@@ -15,6 +15,7 @@ public class SongTransformer {
                 .duration(songRequest.getDuration())
                 .audioUrl(audioUrl)
                 .coverImageUrl(imageUrl)
+                .releaseDate(songRequest.getReleaseDate())
                 .artist(artist)
                 .build();
     }
@@ -29,8 +30,8 @@ public class SongTransformer {
                 .coverArtUrl(song.getCoverImageUrl())
                 .artistName(song.getArtist().getArtistName())
                 .artistId(song.getArtist().getId())
-                .albumId(song.getAlbum().getId())
-                .albumName(song.getAlbum().getAlbumName())
+                .albumId(song.getAlbum()!=null?song.getAlbum().getId():null)
+                .albumName(song.getAlbum()!=null?song.getAlbum().getAlbumName():null)
                 .visibility(song.getVisibility())
                 .build();
     }

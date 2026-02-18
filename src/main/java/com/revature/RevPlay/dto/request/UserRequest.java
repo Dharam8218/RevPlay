@@ -16,6 +16,4 @@ public class UserRequest {
     private String displayName;
     private String bio;
     private Gender gender;
-    private String profilePicture;
-
 }

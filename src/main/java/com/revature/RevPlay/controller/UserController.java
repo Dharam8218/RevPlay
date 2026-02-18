@@ -1,9 +1,6 @@
 package com.revature.RevPlay.controller;
 
-import com.revature.RevPlay.dto.request.ArtistRequest;
-import com.revature.RevPlay.dto.request.LoginRequest;
-import com.revature.RevPlay.dto.request.UserProfileUpdateRequest;
-import com.revature.RevPlay.dto.request.UserRequest;
+import com.revature.RevPlay.dto.request.*;
 import com.revature.RevPlay.dto.response.LoginResponse;
 import com.revature.RevPlay.dto.response.UserResponse;
 import com.revature.RevPlay.model.User;
@@ -36,14 +33,25 @@ public class UserController {
     private final UserRepository userRepository;
     private final JwtUtils jwtUtils;
 
-    @PostMapping("/register/user")
-    public ResponseEntity<UserResponse> registerUser(@RequestBody UserRequest request) {
-        return ResponseEntity.ok(userService.registerUser(request));
+
+    @PostMapping(value = "/register/user",
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<UserResponse> registerUser(
+            @RequestParam("user") String data,
+            @RequestParam(value = "profilePicture", required = false) MultipartFile profilePicture
+    ) {
+        UserRequest userRequest = new ObjectMapper().readValue(data, UserRequest.class);
+        return ResponseEntity.ok(userService.registerUser(userRequest, profilePicture));
     }
 
-    @PostMapping("/register/artist")
-    public ResponseEntity<?> registerArtist(@RequestBody ArtistRequest request) {
-        return ResponseEntity.ok(userService.registerArtist(request));
+    @PostMapping(value = "/register/artist",
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> registerArtist(
+            @RequestParam("artist") String data,
+            @RequestParam(value = "profilePicture", required = false) MultipartFile profilePicture
+    ) {
+        ArtistRequest artistRequest = new ObjectMapper().readValue(data, ArtistRequest.class);
+        return ResponseEntity.ok(userService.registerArtist(artistRequest, profilePicture));
     }
 
     @PostMapping("/login")
@@ -72,7 +80,6 @@ public class UserController {
 
     @PutMapping(value = "/update-profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<UserResponse> updateMyProfile(
-            @RequestParam Long userId,
             @RequestParam("data") String data,
             @RequestParam(value = "profileImage", required = false) MultipartFile profileImage
     ) throws Exception {
@@ -81,13 +88,13 @@ public class UserController {
                 new ObjectMapper().readValue(data, UserProfileUpdateRequest.class);
 
         return ResponseEntity.ok(
-                userService.updateProfile(userId, request, profileImage)
+                userService.updateProfile(request, profileImage)
         );
     }
 
     @GetMapping("/get-profile")
-    public ResponseEntity<UserResponse> getMyProfile(@RequestParam Long userId) {
-        return ResponseEntity.ok(userService.getProfile(userId));
+    public ResponseEntity<UserResponse> getMyProfile() {
+        return ResponseEntity.ok(userService.getProfile());
     }
 
 }
