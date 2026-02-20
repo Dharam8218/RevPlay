@@ -6,19 +6,27 @@ import com.revature.RevPlay.dto.request.SongUpdateRequest;
 import com.revature.RevPlay.dto.request.SongVisibilityRequest;
 import com.revature.RevPlay.dto.response.SongDetailsResponse;
 import com.revature.RevPlay.dto.response.SongResponse;
+import com.revature.RevPlay.exception.AlbumNotFoundException;
+import com.revature.RevPlay.exception.ArtistNotFoundException;
+import com.revature.RevPlay.exception.SongNotFoundException;
+import com.revature.RevPlay.exception.UserNotFoundException;
 import com.revature.RevPlay.model.Album;
 import com.revature.RevPlay.model.Artist;
 import com.revature.RevPlay.model.Song;
+import com.revature.RevPlay.model.User;
 import com.revature.RevPlay.repository.AlbumRepository;
 import com.revature.RevPlay.repository.ArtistRepository;
 import com.revature.RevPlay.repository.SongRepository;
+import com.revature.RevPlay.repository.UserRepository;
 import com.revature.RevPlay.transformer.SongTransformer;
+import com.revature.RevPlay.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -28,13 +36,22 @@ public class SongService {
     private final SongRepository songRepository;
     private final ArtistRepository artistRepository;
     private final AlbumRepository albumRepository;
+    private final UserRepository userRepository;
+
+    private Long getArtistId() {
+        String username = SecurityUtils.getCurrentUsername();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        return user.getArtist() != null ? user.getArtist().getId() : null;
+    }
+
 
     public SongResponse uploadSong(SongRequest request,
                                    MultipartFile audioFile,
                                    MultipartFile coverImage) {
 
-        Artist artist = artistRepository.findById(request.getArtistId())
-                .orElseThrow(() -> new RuntimeException("Artist not found"));
+        Artist artist = artistRepository.findById(Objects.requireNonNull(getArtistId()))
+                .orElseThrow(() -> new ArtistNotFoundException("Artist not found"));
 
         String audioUrl = cloudinaryService.uploadFile(audioFile, "songs");
         String imageUrl = coverImage != null
@@ -45,20 +62,20 @@ public class SongService {
         return SongTransformer.songToSongResponse(saved);
     }
 
-    public List<SongResponse> getAllSongs(Long artistId) {
-        return songRepository.findByArtistId(artistId).stream()
+    public List<SongResponse> getAllSongs() {
+        return songRepository.findByArtistId(getArtistId()).stream()
                 .map(SongTransformer::songToSongResponse)
                 .toList();
     }
 
     @Transactional
-    public SongResponse updateSong(Long songId, Long artistId, SongUpdateRequest request) {
+    public SongResponse updateSong(Long songId, SongUpdateRequest request) {
 
         Song song = songRepository.findById(songId)
-                .orElseThrow(() -> new RuntimeException("Song not found"));
+                .orElseThrow(() -> new SongNotFoundException("Song not found"));
 
         // ownership check
-        if (!song.getArtist().getId().equals(artistId)) {
+        if (!song.getArtist().getId().equals(getArtistId())) {
             throw new RuntimeException("You can update only your own songs");
         }
 
@@ -75,10 +92,10 @@ public class SongService {
             song.setAlbum(null); // remove from album
         } else {
             Album album = albumRepository.findById(request.getAlbumId())
-                    .orElseThrow(() -> new RuntimeException("Album not found"));
+                    .orElseThrow(() -> new AlbumNotFoundException("Album not found"));
 
             // ensure same artist owns album
-            if (!album.getArtist().getId().equals(artistId)) {
+            if (!album.getArtist().getId().equals(getArtistId())) {
                 throw new RuntimeException("You can add songs only to your own albums");
             }
 
@@ -89,12 +106,12 @@ public class SongService {
     }
 
     @Transactional
-    public void deleteSong(Long songId, Long artistId) {
+    public void deleteSong(Long songId) {
 
         Song song = songRepository.findById(songId)
-                .orElseThrow(() -> new RuntimeException("Song not found"));
+                .orElseThrow(() -> new SongNotFoundException("Song not found"));
 
-        if (!song.getArtist().getId().equals(artistId)) {
+        if (!song.getArtist().getId().equals(getArtistId())) {
             throw new RuntimeException("You can delete only your own songs");
         }
 
@@ -105,12 +122,12 @@ public class SongService {
     }
 
     @Transactional
-    public SongResponse updateVisibility(Long songId, Long artistId, SongVisibilityRequest req) {
+    public SongResponse updateVisibility(Long songId, SongVisibilityRequest req) {
 
         Song song = songRepository.findById(songId)
-                .orElseThrow(() -> new RuntimeException("Song not found"));
+                .orElseThrow(() -> new SongNotFoundException("Song not found"));
 
-        if (!song.getArtist().getId().equals(artistId)) {
+        if (!song.getArtist().getId().equals(getArtistId())) {
             throw new RuntimeException("Unauthorized");
         }
 
@@ -127,7 +144,7 @@ public class SongService {
     public SongDetailsResponse getSongDetails(Long songId) {
 
         Song song = songRepository.findById(songId)
-                .orElseThrow(() -> new RuntimeException("Song not found with id: " + songId));
+                .orElseThrow(() -> new SongNotFoundException("Song not found with id: " + songId));
 
         SongDetailsResponse.ArtistMini artistMini = null;
         if (song.getArtist() != null) {

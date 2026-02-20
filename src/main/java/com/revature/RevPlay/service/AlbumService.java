@@ -3,21 +3,27 @@ package com.revature.RevPlay.service;
 import com.revature.RevPlay.dto.request.AlbumRequest;
 import com.revature.RevPlay.dto.request.AlbumUpdateRequest;
 import com.revature.RevPlay.dto.response.AlbumResponse;
+import com.revature.RevPlay.exception.AlbumNotFoundException;
+import com.revature.RevPlay.exception.ArtistNotFoundException;
+import com.revature.RevPlay.exception.SongNotFoundException;
+import com.revature.RevPlay.exception.UserNotFoundException;
 import com.revature.RevPlay.model.Album;
 import com.revature.RevPlay.model.Artist;
 import com.revature.RevPlay.model.Song;
+import com.revature.RevPlay.model.User;
 import com.revature.RevPlay.repository.AlbumRepository;
 import com.revature.RevPlay.repository.ArtistRepository;
 import com.revature.RevPlay.repository.SongRepository;
+import com.revature.RevPlay.repository.UserRepository;
 import com.revature.RevPlay.transformer.AlbumTransformer;
+import com.revature.RevPlay.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
-import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -27,11 +33,20 @@ public class AlbumService {
     private final ArtistRepository artistRepository;
     private final CloudinaryService cloudinaryService;
     private final SongRepository songRepository;
+    private final UserRepository userRepository;
+
+    private Long getArtistId() {
+        String username = SecurityUtils.getCurrentUsername();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        return user.getArtist() != null ? user.getArtist().getId() : null;
+    }
+
 
     public AlbumResponse createAlbum(AlbumRequest request, MultipartFile coverArt) {
 
-        Artist artist = artistRepository.findById(request.getArtistId())
-                .orElseThrow(() -> new RuntimeException("Artist not found"));
+        Artist artist = artistRepository.findById(Objects.requireNonNull(getArtistId()))
+                .orElseThrow(() -> new ArtistNotFoundException("Artist not found"));
         String coverUrl = null;
         if (coverArt != null && !coverArt.isEmpty()) {
             coverUrl = cloudinaryService.uploadFile(coverArt, "album_covers");
@@ -41,17 +56,17 @@ public class AlbumService {
     }
 
     @Transactional
-    public void addSongToAlbum(Long albumId, Long songId, Long artistId) {
+    public void addSongToAlbum(Long albumId, Long songId) {
 
         Album album = albumRepository.findById(albumId)
-                .orElseThrow(() -> new RuntimeException("Album not found"));
+                .orElseThrow(() -> new AlbumNotFoundException("Album not found"));
 
         Song song = songRepository.findById(songId)
-                .orElseThrow(() -> new RuntimeException("Song not found"));
+                .orElseThrow(() -> new SongNotFoundException("Song not found"));
 
         // SECURITY CHECK
-        if (!album.getArtist().getId().equals(artistId) ||
-                !song.getArtist().getId().equals(artistId)) {
+        if (!album.getArtist().getId().equals(getArtistId()) ||
+                !song.getArtist().getId().equals(getArtistId())) {
             throw new RuntimeException("You can only manage your own songs/albums");
         }
         song.setAlbum(album);
@@ -59,16 +74,16 @@ public class AlbumService {
     }
 
     @Transactional
-    public void removeSongFromAlbum(Long albumId, Long songId, Long artistId) {
+    public void removeSongFromAlbum(Long albumId, Long songId) {
 
         Album album = albumRepository.findById(albumId)
-                .orElseThrow(() -> new RuntimeException("Album not found"));
+                .orElseThrow(() -> new AlbumNotFoundException("Album not found"));
 
         Song song = songRepository.findById(songId)
-                .orElseThrow(() -> new RuntimeException("Song not found"));
+                .orElseThrow(() -> new SongNotFoundException("Song not found"));
 
-        if (!album.getArtist().getId().equals(artistId) ||
-                !song.getArtist().getId().equals(artistId)) {
+        if (!album.getArtist().getId().equals(getArtistId()) ||
+                !song.getArtist().getId().equals(getArtistId())) {
             throw new RuntimeException("Unauthorized");
         }
 
@@ -81,20 +96,20 @@ public class AlbumService {
         songRepository.save(song);
     }
 
-    public List<AlbumResponse> getAllAlbums(Long artistId) {
-        return albumRepository.findByArtistId(artistId).stream()
+    public List<AlbumResponse> getAllAlbums() {
+        return albumRepository.findByArtistId(getArtistId()).stream()
                 .map(AlbumTransformer::albumToAlbumResponse)
                 .toList();
     }
 
     @Transactional
-    public AlbumResponse updateAlbum(Long albumId, Long artistId, AlbumUpdateRequest request, MultipartFile cover) {
+    public AlbumResponse updateAlbum(Long albumId, AlbumUpdateRequest request, MultipartFile cover) {
 
         Album album = albumRepository.findById(albumId)
-                .orElseThrow(() -> new RuntimeException("Album not found"));
+                .orElseThrow(() -> new AlbumNotFoundException("Album not found"));
 
         // ownership check
-        if (!album.getArtist().getId().equals(artistId)) {
+        if (!album.getArtist().getId().equals(getArtistId())) {
             throw new RuntimeException("You can update only your own albums");
         }
 
@@ -117,12 +132,12 @@ public class AlbumService {
     }
 
     @Transactional
-    public void deleteAlbum(Long albumId, Long artistId) {
+    public void deleteAlbum(Long albumId) {
 
         Album album = albumRepository.findById(albumId)
-                .orElseThrow(() -> new RuntimeException("Album not found"));
+                .orElseThrow(() -> new AlbumNotFoundException("Album not found"));
 
-        if (!album.getArtist().getId().equals(artistId)) {
+        if (!album.getArtist().getId().equals(getArtistId())) {
             throw new RuntimeException("You can delete only your own albums");
         }
 

@@ -13,6 +13,5 @@ public class SongRequest {
     private String audioUrl;   // file URL for now
     private String coverArtUrl;  // optional
     private Long albumId; // optional
-    private Long artistId;
     private LocalDate releaseDate;
 }

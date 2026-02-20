@@ -39,10 +39,10 @@ public class AlbumController {
     @PostMapping("/{albumId}/songs/{songId}")
     public ResponseEntity<String> addSongToAlbum(
             @PathVariable Long albumId,
-            @PathVariable Long songId,
-            @RequestParam Long artistId) {
+            @PathVariable Long songId
+    ) {
 
-        albumService.addSongToAlbum(albumId, songId, artistId);
+        albumService.addSongToAlbum(albumId, songId);
 
         return ResponseEntity.ok("Song added to album successfully");
     }
@@ -50,40 +50,36 @@ public class AlbumController {
     @DeleteMapping("/{albumId}/songs/{songId}")
     public ResponseEntity<String> removeSongFromAlbum(
             @PathVariable Long albumId,
-            @PathVariable Long songId,
-            @RequestParam Long artistId) {
-
-        albumService.removeSongFromAlbum(albumId, songId, artistId);
+            @PathVariable Long songId
+    ) {
+        albumService.removeSongFromAlbum(albumId, songId);
 
         return ResponseEntity.ok("Song removed from album");
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity<List<AlbumResponse>> getMyAlbums(@RequestParam Long artistId) {
-        return ResponseEntity.ok(albumService.getAllAlbums(artistId));
+    public ResponseEntity<List<AlbumResponse>> getMyAlbums() {
+        return ResponseEntity.ok(albumService.getAllAlbums());
     }
 
     @PostMapping(value = "/{albumId}/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AlbumResponse> updateAlbum(
             @PathVariable Long albumId,
-            @RequestParam Long artistId,
             @RequestParam("data") String data,
             @RequestParam(value = "cover", required = false) MultipartFile cover
     ) throws Exception {
 
         AlbumUpdateRequest request = new ObjectMapper().readValue(data, AlbumUpdateRequest.class);
 
-        return ResponseEntity.ok(albumService.updateAlbum(albumId, artistId, request, cover));
+        return ResponseEntity.ok(albumService.updateAlbum(albumId, request, cover));
     }
 
     @DeleteMapping("/{albumId}")
     public ResponseEntity<String> deleteAlbum(
-            @PathVariable Long albumId,
-            @RequestParam Long artistId
+            @PathVariable Long albumId
     ) {
-        albumService.deleteAlbum(albumId, artistId);
+        albumService.deleteAlbum(albumId);
         return ResponseEntity.ok("Album deleted successfully");
     }
-
 
 }

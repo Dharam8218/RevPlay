@@ -39,35 +39,32 @@ public class SongController {
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity<List<SongResponse>> getMySongs(@RequestParam Long artistId) {
-        return ResponseEntity.ok(songService.getAllSongs(artistId));
+    public ResponseEntity<List<SongResponse>> getMySongs() {
+        return ResponseEntity.ok(songService.getAllSongs());
     }
 
     @PutMapping("/{songId}")
     public ResponseEntity<SongResponse> updateSong(
             @PathVariable Long songId,
-            @RequestParam Long artistId,
             @RequestBody SongUpdateRequest request
     ) {
-        return ResponseEntity.ok(songService.updateSong(songId, artistId, request));
+        return ResponseEntity.ok(songService.updateSong(songId, request));
     }
 
     @DeleteMapping("/{songId}")
     public ResponseEntity<String> deleteSong(
-            @PathVariable Long songId,
-            @RequestParam Long artistId
+            @PathVariable Long songId
     ) {
-        songService.deleteSong(songId, artistId);
+        songService.deleteSong(songId);
         return ResponseEntity.ok("Song deleted successfully");
     }
 
     @PatchMapping("/{songId}/visibility")
     public ResponseEntity<SongResponse> updateVisibility(
             @PathVariable Long songId,
-            @RequestParam Long artistId,
             @RequestBody SongVisibilityRequest request
     ) {
-        return ResponseEntity.ok(songService.updateVisibility(songId, artistId, request));
+        return ResponseEntity.ok(songService.updateVisibility(songId, request));
     }
 
     @GetMapping("/{id}")
