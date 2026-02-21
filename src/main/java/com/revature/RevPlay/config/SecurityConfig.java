@@ -66,7 +66,7 @@ public class SecurityConfig {
                         .requestMatchers("/revplay/album/**").hasRole("ARTIST")
                         .requestMatchers("/revplay/update-profile").permitAll()
                         .requestMatchers("/revplay/library/**").permitAll()
-                        .requestMatchers("/revplay/artist-profile/**").hasRole("ARTIST")
+                        .requestMatchers("/revplay/artist/**").hasRole("ARTIST")
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/", "/health").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
