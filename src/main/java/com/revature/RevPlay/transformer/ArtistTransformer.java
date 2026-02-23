@@ -2,6 +2,7 @@ package com.revature.RevPlay.transformer;
 
 import com.revature.RevPlay.dto.request.ArtistProfileRequest;
 import com.revature.RevPlay.dto.request.ArtistRequest;
+import com.revature.RevPlay.dto.request.UserRequest;
 import com.revature.RevPlay.dto.response.ArtistProfileResponse;
 import com.revature.RevPlay.dto.response.ArtistResponse;
 import com.revature.RevPlay.model.Album;
@@ -13,10 +14,9 @@ import java.util.List;
 
 public class ArtistTransformer {
 
-    public static Artist artistRequestToArtist(ArtistRequest artistRequest, User user) {
+    public static Artist artistRequestToArtist(UserRequest artistRequest, User user) {
         return Artist.builder()
-                .artistName(artistRequest.getArtistName())
-                .genre(artistRequest.getGenre())
+                .artistName(artistRequest.getUsername())
                 .user(user)
                 .build();
     }

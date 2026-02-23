@@ -47,11 +47,11 @@ public class UserController {
     @PostMapping(value = "/register/artist",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> registerArtist(
-            @RequestParam("artist") String data,
+            @RequestParam("user") String data,
             @RequestParam(value = "profilePicture", required = false) MultipartFile profilePicture
     ) {
-        ArtistRequest artistRequest = new ObjectMapper().readValue(data, ArtistRequest.class);
-        return ResponseEntity.ok(userService.registerArtist(artistRequest, profilePicture));
+        UserRequest userRequest = new ObjectMapper().readValue(data, UserRequest.class);
+        return ResponseEntity.ok(userService.registerArtist(userRequest, profilePicture));
     }
 
     @PostMapping("/login")

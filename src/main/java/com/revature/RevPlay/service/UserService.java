@@ -42,7 +42,8 @@ public class UserService {
         return UserTransformer.userToUserResponse(userRepository.save(user));
     }
 
-    public UserResponse registerArtist(ArtistRequest request, MultipartFile profilePicture) {
+    @Transactional
+    public UserResponse registerArtist(UserRequest request, MultipartFile profilePicture) {
         User user = UserTransformer.userRequestToUser(request);
         if (profilePicture != null && !profilePicture.isEmpty()) {
             String url = cloudinaryService.uploadFile(profilePicture, "profile_images");

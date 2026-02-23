@@ -3,6 +3,7 @@ package com.revature.RevPlay.service;
 import com.revature.RevPlay.dto.response.ListeningHistoryResponse;
 import com.revature.RevPlay.exception.SongNotFoundException;
 import com.revature.RevPlay.exception.UserNotFoundException;
+import com.revature.RevPlay.model.ListeningHistory;
 import com.revature.RevPlay.model.Song;
 import com.revature.RevPlay.model.User;
 import com.revature.RevPlay.repository.ListeningHistoryRepository;
@@ -17,7 +18,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,9 +39,26 @@ public class ListeningHistoryService {
         Song song = songRepository.findById(songId)
                 .orElseThrow(() -> new SongNotFoundException("Song not found"));
 
-        listeningHistoryRepository.save(
-                ListeningHistoryTransformer.toListeningHistory(user, song)
-        );
+        Optional<ListeningHistory> existing =
+                listeningHistoryRepository.findByUser_IdAndSong_Id(user.getId(), songId);
+
+        if (existing.isPresent()) {
+
+            ListeningHistory history = existing.get();
+            history.setPlayedAt(LocalDateTime.now());
+
+            listeningHistoryRepository.save(history);
+
+        } else {
+
+            ListeningHistory history = ListeningHistory.builder()
+                    .user(user)
+                    .song(song)
+                    .playedAt(LocalDateTime.now())
+                    .build();
+
+            listeningHistoryRepository.save(history);
+        }
     }
 
     public List<ListeningHistoryResponse> getRecentlyPlayed() {

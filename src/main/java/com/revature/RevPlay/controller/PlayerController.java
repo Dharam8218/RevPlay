@@ -37,7 +37,8 @@ public class PlayerController {
 
     @DeleteMapping("/songs/listening-history")
     public ResponseEntity<String> clear() {
-        return ResponseEntity.ok(listeningHistoryService.clearHistory());
+        listeningHistoryService.clearHistory();
+        return ResponseEntity.noContent().build();
     }
 
 

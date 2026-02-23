@@ -25,7 +25,6 @@ public class Artist{
     private String bio;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Genre genre;
 
     private String profilePicture;

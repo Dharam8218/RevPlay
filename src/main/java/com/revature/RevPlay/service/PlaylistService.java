@@ -2,7 +2,9 @@ package com.revature.RevPlay.service;
 
 import com.revature.RevPlay.dto.request.PlaylistRequest;
 import com.revature.RevPlay.dto.request.PlaylistUpdateRequest;
+import com.revature.RevPlay.dto.response.PlaylistDetailsResponse;
 import com.revature.RevPlay.dto.response.PlaylistResponse;
+import com.revature.RevPlay.dto.response.SongResponse;
 import com.revature.RevPlay.exception.PlaylistNotFoundException;
 import com.revature.RevPlay.exception.SongNotFoundException;
 import com.revature.RevPlay.exception.UserNotFoundException;
@@ -13,6 +15,7 @@ import com.revature.RevPlay.repository.PlaylistRepository;
 import com.revature.RevPlay.repository.SongRepository;
 import com.revature.RevPlay.repository.UserRepository;
 import com.revature.RevPlay.transformer.PlaylistTransformer;
+import com.revature.RevPlay.transformer.SongTransformer;
 import com.revature.RevPlay.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +24,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -60,6 +65,7 @@ public class PlaylistService {
         return PlaylistTransformer.playlistToPlaylistResponse(playlist);
     }
 
+    @Transactional
     public PlaylistResponse addSongToPlaylist(Long playlistId, Long songId) {
         String username = SecurityUtils.getCurrentUsername();
         User user = userRepository.findByUsername(username).orElseThrow(
@@ -73,9 +79,10 @@ public class PlaylistService {
                 .orElseThrow(() -> new SongNotFoundException("Song not found"));
 
         playlist.getSongs().add(song);
-        Playlist saved = playlistRepository.save(playlist);
+        song.getPlaylists().add(playlist);
+        playlistRepository.save(playlist);
 
-        return PlaylistTransformer.playlistToPlaylistResponse(saved);
+        return PlaylistTransformer.playlistToPlaylistResponse(playlist);
     }
 
     public PlaylistResponse removeSongFromPlaylist(Long playlistId, Long songId) {
@@ -182,7 +189,7 @@ public class PlaylistService {
     }
 
     @Transactional
-    public String followPlaylist(Long playlistId) {
+    public void followPlaylist(Long playlistId) {
 
         String  username = SecurityUtils.getCurrentUsername();
         User user = userRepository.findByUsername(username)
@@ -200,14 +207,13 @@ public class PlaylistService {
         }
 
         boolean added = playlist.getFollowers().add(user);
-        if (!added) return "Already followed";
+        if (!added) return;
 
         playlistRepository.save(playlist);
-        return "Playlist followed";
     }
 
     @Transactional
-    public String unfollowPlaylist(Long playlistId) {
+    public void unfollowPlaylist(Long playlistId) {
 
         String username = SecurityUtils.getCurrentUsername();
         User user = userRepository.findByUsername(username)
@@ -217,11 +223,37 @@ public class PlaylistService {
                 .orElseThrow(() -> new PlaylistNotFoundException("Playlist not found"));
 
         boolean removed = playlist.getFollowers().remove(user);
-        if (!removed) return "Not following";
+        if (!removed) return;
 
         playlistRepository.save(playlist);
-        return "Playlist unfollowed";
     }
 
+    @Transactional
+    public PlaylistDetailsResponse getPlaylistById(Long playlistId) {
+
+        Playlist playlist = playlistRepository.findByIdWithSongs(playlistId)
+                .orElseThrow(() -> new RuntimeException("Playlist not found"));
+
+        String username = SecurityUtils.getCurrentUsername();
+        boolean isOwner = playlist.getUser().getUsername().equals(username);
+
+        if (!playlist.isPublic() && !isOwner) {
+            throw new RuntimeException("Access Denied: Private Playlist");
+        }
+
+        List<SongResponse> songResponses = playlist.getSongs()
+                .stream()
+                .map(SongTransformer::songToSongResponse)
+                .toList();
+        return PlaylistDetailsResponse.builder()
+                .id(playlist.getId())
+                .name(playlist.getName())
+                .description(playlist.getDescription())
+                .isPublic(playlist.isPublic())
+                .ownerUsername(playlist.getUser().getUsername())
+                .totalSongs(playlist.getSongs().size())
+                .songs(songResponses)
+                .build();
+    }
 }
 

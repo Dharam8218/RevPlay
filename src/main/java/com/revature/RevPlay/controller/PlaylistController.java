@@ -3,6 +3,7 @@ package com.revature.RevPlay.controller;
 import com.revature.RevPlay.dto.request.PlaylistPrivacyUpdateRequest;
 import com.revature.RevPlay.dto.request.PlaylistRequest;
 import com.revature.RevPlay.dto.request.PlaylistUpdateRequest;
+import com.revature.RevPlay.dto.response.PlaylistDetailsResponse;
 import com.revature.RevPlay.dto.response.PlaylistResponse;
 import com.revature.RevPlay.service.PlaylistService;
 import lombok.RequiredArgsConstructor;
@@ -64,13 +65,13 @@ public class PlaylistController {
         return ResponseEntity.ok(playlistService.getMyPlaylists(page, size, sortBy, direction));
     }
 
-    @PutMapping("/{playlistId}")
-    public ResponseEntity<PlaylistResponse> updatePlaylist(
-            @PathVariable Long playlistId,
-            @RequestBody PlaylistUpdateRequest request
-    ) {
-        return ResponseEntity.ok(playlistService.updatePlaylist(playlistId, request));
-    }
+        @PutMapping("/{playlistId}")
+        public ResponseEntity<PlaylistResponse> updatePlaylist(
+                @PathVariable Long playlistId,
+                @RequestBody PlaylistUpdateRequest request
+        ) {
+            return ResponseEntity.ok(playlistService.updatePlaylist(playlistId, request));
+        }
 
     @DeleteMapping("/{playlistId}")
     public ResponseEntity<String> deletePlaylist(@PathVariable Long playlistId) {
@@ -90,12 +91,20 @@ public class PlaylistController {
 
     @PostMapping("/{playlistId}/follow")
     public ResponseEntity<String> follow(@PathVariable Long playlistId) {
-        return ResponseEntity.ok(playlistService.followPlaylist(playlistId));
+        playlistService.followPlaylist(playlistId);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{playlistId}/unfollow")
     public ResponseEntity<String> unfollow(@PathVariable Long playlistId) {
-        return ResponseEntity.ok(playlistService.unfollowPlaylist(playlistId));
+        playlistService.unfollowPlaylist(playlistId);
+        return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/{playlistId}/songs")
+    public ResponseEntity<PlaylistDetailsResponse> getPlaylistSongs(
+            @PathVariable Long playlistId
+    ) {
+        return ResponseEntity.ok(playlistService.getPlaylistById(playlistId));
     }
 
 }

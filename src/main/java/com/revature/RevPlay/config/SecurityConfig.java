@@ -67,6 +67,7 @@ public class SecurityConfig {
                         .requestMatchers("/revplay/update-profile").permitAll()
                         .requestMatchers("/revplay/library/**").permitAll()
                         .requestMatchers("/revplay/artist/**").hasRole("ARTIST")
+                        .requestMatchers("/revplay/playlists/**").hasRole("USER")
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/", "/health").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
@@ -84,15 +85,16 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH",
-                "DELETE", "OPTIONS"));
+        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","PATCH","OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setExposedHeaders(List.of("Authorization"));
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
+
         return source;
     }
 }

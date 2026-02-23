@@ -11,11 +11,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ListeningHistoryRepository extends JpaRepository<ListeningHistory, Long> {
 
     Page<ListeningHistory> findByUserIdOrderByPlayedAtDesc(Long userId, Pageable pageable);
+
+    Optional<ListeningHistory> findByUser_IdAndSong_Id(Long userId, Long songId);
 
     List<ListeningHistory> findTop50ByUserIdOrderByPlayedAtDesc(Long userId);
 
