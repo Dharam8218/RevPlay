@@ -11,4 +11,5 @@ public class ArtistDashboardResponse {
     private long totalSongs;
     private long totalPlays;
     private long totalFavorites;
+    private long totalAlbums;
 }

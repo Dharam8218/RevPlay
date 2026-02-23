@@ -8,10 +8,6 @@ public class ArtistProfileRequest {
     private String artistName;
     private String bio;
     private Genre genre;
-
-    private String profilePicture;
-    private String bannerImage;
-
     private String instagram;
     private String twitter;
     private String youtube;

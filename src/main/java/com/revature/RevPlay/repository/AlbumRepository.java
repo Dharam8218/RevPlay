@@ -15,4 +15,6 @@ public interface AlbumRepository extends JpaRepository<Album, Long> {
             String albumName, String description, Pageable pageable
     );
 
+    long countByArtistId(Long artistId);
+
 }

@@ -44,7 +44,7 @@ public class AlbumController {
 
         albumService.addSongToAlbum(albumId, songId);
 
-        return ResponseEntity.ok("Song added to album successfully");
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{albumId}/songs/{songId}")
@@ -54,12 +54,17 @@ public class AlbumController {
     ) {
         albumService.removeSongFromAlbum(albumId, songId);
 
-        return ResponseEntity.ok("Song removed from album");
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/get-all")
     public ResponseEntity<List<AlbumResponse>> getMyAlbums() {
         return ResponseEntity.ok(albumService.getAllAlbums());
+    }
+
+    @GetMapping("/get-all-albums")
+    public ResponseEntity<List<AlbumResponse>> getAllAlbums(){
+        return ResponseEntity.ok(albumService.getAllAlbum());
     }
 
     @PostMapping(value = "/{albumId}/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -79,7 +84,7 @@ public class AlbumController {
             @PathVariable Long albumId
     ) {
         albumService.deleteAlbum(albumId);
-        return ResponseEntity.ok("Album deleted successfully");
+        return ResponseEntity.noContent().build();
     }
 
 }

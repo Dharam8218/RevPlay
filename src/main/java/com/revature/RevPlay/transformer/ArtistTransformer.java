@@ -29,8 +29,8 @@ public class ArtistTransformer {
                 .artistName(request.getArtistName())
                 .bio(request.getBio())
                 .genre(request.getGenre())
-                .profilePicture(request.getProfilePicture())
-                .bannerImage(request.getBannerImage())
+                .bannerImage(artist.getBannerImage())
+                .profilePicture(artist.getProfilePicture())
                 .instagram(request.getInstagram())
                 .twitter(request.getTwitter())
                 .youtube(request.getYoutube())
@@ -50,6 +50,8 @@ public class ArtistTransformer {
                 .instagram(artist.getInstagram())
                 .spotify(artist.getSpotify())
                 .twitter(artist.getTwitter())
+                .youtube(artist.getYoutube())
+                .website(artist.getWebsite())
                 .build();
     }
 

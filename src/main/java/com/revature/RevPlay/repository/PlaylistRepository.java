@@ -30,4 +30,6 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
                 WHERE p.id = :id
             """)
     Optional<Playlist> findByIdWithSongs(@Param("id") Long id);
+
+    long countByUserId(Long userId);
 }

@@ -6,8 +6,11 @@ import com.revature.RevPlay.dto.response.*;
 import com.revature.RevPlay.service.ArtistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -18,11 +21,33 @@ public class ArtistController {
 
     private final ArtistService artistService;
 
-    @PutMapping("/profile")
-    public ResponseEntity<ArtistResponse> updateProfile(
-            @RequestBody ArtistProfileRequest request) {
+    @PutMapping(value = "/profile",
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<ArtistResponse> updateArtistProfile(
 
-        return ResponseEntity.ok(artistService.updateArtistProfile(request));
+            @RequestParam("artist") String data,
+
+            @RequestParam(value = "profilePicture", required = false)
+            MultipartFile profilePicture,
+
+            @RequestParam(value = "bannerImage", required = false)
+            MultipartFile bannerImage
+    ) {
+        ArtistProfileRequest request = new ObjectMapper().readValue(data, ArtistProfileRequest.class);
+        return ResponseEntity.ok(
+                artistService.updateArtistProfile(request, profilePicture, bannerImage)
+        );
+    }
+
+    @GetMapping("/get-all")
+    public ResponseEntity<List<ArtistResponse>> getAllArtist(){
+        return ResponseEntity.ok(artistService.getAllArtist());
+    }
+
+
+    @GetMapping("/profile")
+    public ResponseEntity<ArtistResponse> getArtistProfile(){
+        return ResponseEntity.ok(artistService.getArtistProfile());
     }
 
     @GetMapping("/dashboard")

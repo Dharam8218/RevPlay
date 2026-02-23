@@ -17,6 +17,8 @@ public class ArtistResponse {
     private String instagram;
     private String spotify;
     private String twitter;
+    private String youtube;
+    private String website;
 }
 
 

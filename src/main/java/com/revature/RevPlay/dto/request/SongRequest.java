@@ -10,8 +10,8 @@ public class SongRequest {
     private String title;
     private Genre genre;
     private int duration; // seconds
-    private String audioUrl;   // file URL for now
-    private String coverArtUrl;  // optional
+    private String audioUrl;
+    private String coverArtUrl;
     private Long albumId; // optional
     private LocalDate releaseDate;
 }

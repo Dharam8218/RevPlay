@@ -56,7 +56,7 @@ public class SongController {
             @PathVariable Long songId
     ) {
         songService.deleteSong(songId);
-        return ResponseEntity.ok("Song deleted successfully");
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{songId}/visibility")

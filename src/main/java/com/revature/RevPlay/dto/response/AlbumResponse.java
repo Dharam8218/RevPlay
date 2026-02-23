@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Builder
@@ -14,4 +15,6 @@ public class AlbumResponse {
     private LocalDate releaseDate;
     private String coverArtUrl;
     private String artistName;
+
+    private List<SongResponse> songs;
 }

@@ -4,6 +4,7 @@ import com.revature.RevPlay.dto.request.AlbumRequest;
 import com.revature.RevPlay.dto.response.AlbumDetailsResponse;
 import com.revature.RevPlay.dto.response.AlbumResponse;
 import com.revature.RevPlay.dto.response.AlbumTrackResponse;
+import com.revature.RevPlay.dto.response.SongResponse;
 import com.revature.RevPlay.model.Album;
 import com.revature.RevPlay.model.Artist;
 import com.revature.RevPlay.model.Song;
@@ -24,6 +25,11 @@ public class AlbumTransformer {
     }
 
     public static AlbumResponse albumToAlbumResponse(Album album){
+
+        List<SongResponse> songs = album.getSongs()
+                .stream()
+                .map(SongTransformer::songToSongResponse).toList();
+
         return AlbumResponse.builder()
                 .id(album.getId())
                 .name(album.getAlbumName())
@@ -31,6 +37,7 @@ public class AlbumTransformer {
                 .releaseDate(album.getReleaseDate())
                 .coverArtUrl(album.getCoverArtUrl())
                 .artistName(album.getArtist().getArtistName())
+                .songs(songs)
                 .build();
     }
 

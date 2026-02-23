@@ -4,6 +4,7 @@ import com.revature.RevPlay.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -61,11 +62,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/revplay/register/**").permitAll()
                         .requestMatchers("/revplay/login/**").permitAll()
+                        .requestMatchers("/revplay/user/**").hasRole("USER")
                         .requestMatchers("/revplay/favorites/**").hasRole("USER")
                         .requestMatchers("/revplay/songs/upload").hasRole("ARTIST")
+                        .requestMatchers(HttpMethod.PATCH, "/revplay/songs/**")
+                        .hasRole("ARTIST")
                         .requestMatchers("/revplay/album/**").hasRole("ARTIST")
                         .requestMatchers("/revplay/update-profile").permitAll()
                         .requestMatchers("/revplay/library/**").permitAll()
+                        .requestMatchers("/revplay/artist/get-all").hasRole("USER")
                         .requestMatchers("/revplay/artist/**").hasRole("ARTIST")
                         .requestMatchers("/revplay/playlists/**").hasRole("USER")
                         .requestMatchers("/api/auth/**").permitAll()
