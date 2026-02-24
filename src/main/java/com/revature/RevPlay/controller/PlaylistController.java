@@ -7,6 +7,8 @@ import com.revature.RevPlay.dto.response.PlaylistDetailsResponse;
 import com.revature.RevPlay.dto.response.PlaylistResponse;
 import com.revature.RevPlay.service.PlaylistService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +20,14 @@ public class PlaylistController {
 
     private final PlaylistService playlistService;
 
+    private static final Logger logger =
+            LoggerFactory.getLogger(PlaylistController.class);
+
     @PostMapping
     public ResponseEntity<PlaylistResponse> createPlaylist(
             @RequestBody PlaylistRequest request
     ) {
+        logger.info("creating playlist");
         return ResponseEntity.ok(
                 playlistService.createPlaylist(request)
         );
@@ -33,6 +39,7 @@ public class PlaylistController {
             @RequestBody PlaylistPrivacyUpdateRequest request
 
     ) {
+        logger.info("updating privacy");
         boolean isPublic = request.isPublic();
         return ResponseEntity.ok(
                 playlistService.updatePrivacy(playlistId,  isPublic)
@@ -44,6 +51,7 @@ public class PlaylistController {
             @PathVariable Long playlistId,
             @PathVariable Long songId
     ) {
+        logger.info("adding song to playlist");
         return ResponseEntity.ok(playlistService.addSongToPlaylist(playlistId, songId));
     }
 
@@ -52,6 +60,7 @@ public class PlaylistController {
             @PathVariable Long playlistId,
             @PathVariable Long songId
     ) {
+        logger.info("removing songs from playlist");
         return ResponseEntity.ok(playlistService.removeSongFromPlaylist(playlistId, songId));
     }
 
@@ -62,6 +71,7 @@ public class PlaylistController {
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "desc") String direction
     ) {
+        logger.info("fetching all playlist by user");
         return ResponseEntity.ok(playlistService.getMyPlaylists(page, size, sortBy, direction));
     }
 
@@ -70,11 +80,13 @@ public class PlaylistController {
                 @PathVariable Long playlistId,
                 @RequestBody PlaylistUpdateRequest request
         ) {
+           logger.info("updating playlist");
             return ResponseEntity.ok(playlistService.updatePlaylist(playlistId, request));
         }
 
     @DeleteMapping("/{playlistId}")
     public ResponseEntity<String> deletePlaylist(@PathVariable Long playlistId) {
+        logger.info("deleting playlist");
         playlistService.deleteMyPlaylist(playlistId);
         return ResponseEntity.ok("Playlist deleted successfully");
     }
@@ -86,17 +98,20 @@ public class PlaylistController {
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "desc") String direction
     ) {
+        logger.info("fetching public playlist");
         return ResponseEntity.ok(playlistService.getPublicPlaylists(page, size, sortBy, direction));
     }
 
     @PostMapping("/{playlistId}/follow")
     public ResponseEntity<String> follow(@PathVariable Long playlistId) {
+        logger.info("following playlist");
         playlistService.followPlaylist(playlistId);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{playlistId}/unfollow")
     public ResponseEntity<String> unfollow(@PathVariable Long playlistId) {
+        logger.info("unfollowing playlist");
         playlistService.unfollowPlaylist(playlistId);
         return ResponseEntity.noContent().build();
     }
@@ -104,6 +119,7 @@ public class PlaylistController {
     public ResponseEntity<PlaylistDetailsResponse> getPlaylistSongs(
             @PathVariable Long playlistId
     ) {
+        logger.info("fetching playlist songs");
         return ResponseEntity.ok(playlistService.getPlaylistById(playlistId));
     }
 

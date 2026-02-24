@@ -8,6 +8,8 @@ import com.revature.RevPlay.dto.response.SongResponse;
 import com.revature.RevPlay.service.BrowseService;
 import com.revature.RevPlay.service.SearchService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,9 @@ public class LibraryController {
     private final BrowseService browseService;
     private final SearchService searchService;
 
+    private static final Logger logger =
+            LoggerFactory.getLogger(LibraryController.class);
+
     /*@GetMapping("/songs")
     public ResponseEntity<List<SongResponse>> browseSongs() {
         return ResponseEntity.ok(browseService.browseAllSongs());
@@ -34,6 +39,7 @@ public class LibraryController {
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "desc") String direction
     ) {
+        logger.info("browsing songs");
         return ResponseEntity.ok(browseService.browseAllSongs(page, size, sortBy, direction));
     }
 
@@ -43,6 +49,7 @@ public class LibraryController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
+        logger.info("searching songs");
         return ResponseEntity.ok(searchService.search(q, page, size));
     }
 
@@ -52,6 +59,7 @@ public class LibraryController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
+        logger.info("browsing songs by genre");
         return ResponseEntity.ok(
                 browseService.browseByGenre(genre, page, size)
         );
@@ -63,6 +71,7 @@ public class LibraryController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
+        logger.info("browsing songs by artist");
         return ResponseEntity.ok(
                 browseService.browseByArtist(artistId, page, size)
         );
@@ -74,6 +83,7 @@ public class LibraryController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
+        logger.info("browsing songs by albums");
         return ResponseEntity.ok(
                 browseService.browseByAlbum(albumId, page, size)
         );
@@ -90,6 +100,7 @@ public class LibraryController {
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "desc") String direction
     ) {
+        logger.info("filtering songs");
         return ResponseEntity.ok(
                 browseService.filterSongs(
                         genre, artistId, albumId, year, page, size, sortBy, direction
@@ -99,11 +110,13 @@ public class LibraryController {
 
     @GetMapping("/artists/{id}")
     public ResponseEntity<ArtistProfileResponse> getArtistProfile(@PathVariable Long id) {
+        logger.info("fetching artist profile");
         return ResponseEntity.ok(browseService.getArtistProfile(id));
     }
 
     @GetMapping("/albums/{albumId}")
     public ResponseEntity<AlbumDetailsResponse> getAlbumDetails(@PathVariable Long albumId) {
+        logger.info("fetching album details");
         return ResponseEntity.ok(browseService.getAlbumDetails(albumId));
     }
 }

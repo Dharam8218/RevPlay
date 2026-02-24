@@ -7,6 +7,8 @@ import com.revature.RevPlay.dto.response.SongDetailsResponse;
 import com.revature.RevPlay.dto.response.SongResponse;
 import com.revature.RevPlay.service.SongService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,8 @@ import java.util.List;
 public class SongController {
 
     private final SongService songService;
+    private static final Logger logger =
+            LoggerFactory.getLogger(SongController.class);
 
     @PostMapping(
             value = "/upload",
@@ -31,7 +35,7 @@ public class SongController {
             @RequestParam("audio") MultipartFile audio,
             @RequestParam(value = "cover", required = false) MultipartFile cover
     ) throws Exception {
-
+       logger.info("uploading songs");
         SongRequest dto = new ObjectMapper().readValue(data, SongRequest.class);
         SongResponse response = songService.uploadSong(dto, audio, cover);
 
@@ -40,6 +44,7 @@ public class SongController {
 
     @GetMapping("/get-all")
     public ResponseEntity<List<SongResponse>> getMySongs() {
+        logger.info("fetching all artist songs");
         return ResponseEntity.ok(songService.getAllSongs());
     }
 
@@ -48,6 +53,7 @@ public class SongController {
             @PathVariable Long songId,
             @RequestBody SongUpdateRequest request
     ) {
+        logger.info("updating songs");
         return ResponseEntity.ok(songService.updateSong(songId, request));
     }
 
@@ -55,6 +61,7 @@ public class SongController {
     public ResponseEntity<String> deleteSong(
             @PathVariable Long songId
     ) {
+        logger.info("deleting songs");
         songService.deleteSong(songId);
         return ResponseEntity.noContent().build();
     }
@@ -64,11 +71,13 @@ public class SongController {
             @PathVariable Long songId,
             @RequestBody SongVisibilityRequest request
     ) {
+        logger.info("updating song visibility");
         return ResponseEntity.ok(songService.updateVisibility(songId, request));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<SongDetailsResponse> getSongDetails(@PathVariable Long id) {
+        logger.info("fetching song details");
         return ResponseEntity.ok(songService.getSongDetails(id));
     }
 }

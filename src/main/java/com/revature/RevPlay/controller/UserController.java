@@ -8,6 +8,8 @@ import com.revature.RevPlay.repository.UserRepository;
 import com.revature.RevPlay.security.JwtUtils;
 import com.revature.RevPlay.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,6 +35,9 @@ public class UserController {
     private final UserRepository userRepository;
     private final JwtUtils jwtUtils;
 
+    private static final Logger logger =
+            LoggerFactory.getLogger(UserController.class);
+
 
     @PostMapping(value = "/register/user",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -40,6 +45,8 @@ public class UserController {
             @RequestParam("user") String data,
             @RequestParam(value = "profilePicture", required = false) MultipartFile profilePicture
     ) {
+
+        logger.info("registering user");
         UserRequest userRequest = new ObjectMapper().readValue(data, UserRequest.class);
         return ResponseEntity.ok(userService.registerUser(userRequest, profilePicture));
     }
@@ -50,6 +57,7 @@ public class UserController {
             @RequestParam("user") String data,
             @RequestParam(value = "profilePicture", required = false) MultipartFile profilePicture
     ) {
+        logger.info("registering artist");
         UserRequest userRequest = new ObjectMapper().readValue(data, UserRequest.class);
         return ResponseEntity.ok(userService.registerArtist(userRequest, profilePicture));
     }
@@ -62,7 +70,7 @@ public class UserController {
                         loginRequest.getPassword()
                 )
         );
-
+        logger.info("stating login");
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
 
@@ -83,7 +91,7 @@ public class UserController {
             @RequestParam("data") String data,
             @RequestParam(value = "profileImage", required = false) MultipartFile profileImage
     ) throws Exception {
-
+        logger.info("updating user");
         UserProfileUpdateRequest request =
                 new ObjectMapper().readValue(data, UserProfileUpdateRequest.class);
 
@@ -94,6 +102,7 @@ public class UserController {
 
     @GetMapping("/get-profile")
     public ResponseEntity<UserResponse> getMyProfile() {
+        logger.info("fetching profile");
         return ResponseEntity.ok(userService.getProfile());
     }
 

@@ -6,6 +6,8 @@ import com.revature.RevPlay.dto.request.QueueUpdateRequest;
 import com.revature.RevPlay.dto.response.NowPlayingResponse;
 import com.revature.RevPlay.service.PlaybackService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +18,12 @@ public class PlaybackController {
 
     private final PlaybackService playbackService;
 
+    private static final Logger logger =
+            LoggerFactory.getLogger(PlaybackController.class);
+
     @PostMapping("/play/{songId}")
     public ResponseEntity<NowPlayingResponse> play(@PathVariable Long songId) {
+        logger.info("playing song");
         return ResponseEntity.ok(playbackService.play(songId));
     }
 
