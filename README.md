@@ -81,6 +81,8 @@ The application is designed with scalable architecture and can be extended into 
 ## 📂 Project Structure
 
 ### Backend (Spring Boot)
+
+```
 com.revature.revplay
 │
 ├── controller
@@ -90,7 +92,11 @@ com.revature.revplay
 ├── dto
 ├── config
 └── security
-Frontend (Angular)
+```
+
+### Frontend (Angular)
+
+```
 src/app
 │
 ├── components
@@ -104,6 +110,8 @@ src/app
 ├── interceptors
 ├── models
 └── pages
+```
+
 ⚙️ Setup Instructions
 🔹 Backend Setup
 
