@@ -8,102 +8,79 @@
 
 RevPlay is a full-stack monolithic music streaming web application that allows users to explore, stream, and manage music content including songs, artists, albums, playlists, and podcasts. The platform supports role-based access for Listeners and Artists and includes a built-in web music player.
 
-🚀 Application Overview
+--
+
+## 🚀 Application Overview
 
 RevPlay provides:
 
-🎧 Music streaming with integrated player
-
-🔎 Advanced search & genre-based browsing
-
-❤️ Favorites & playlist management
-
-👤 User & Artist profiles
-
-📊 Real-time user statistics
-
-🔐 Secure authentication with JWT
-
-🎭 Role-based authorization
+- 🎧 Music streaming with integrated player  
+- 🔎 Advanced search & genre-based browsing  
+- ❤️ Favorites & playlist management  
+- 👤 User & Artist profiles  
+- 📊 Real-time user statistics  
+- 🔐 Secure authentication with JWT  
+- 🎭 Role-based authorization  
 
 The application is designed with scalable architecture and can be extended into microservices in future phases.
 
-🏗️ Tech Stack
-Backend
+---
 
-Java
+## 🏗️ Tech Stack
 
-Spring Boot
+### 🔹 Backend
+- Java  
+- Spring Boot  
+- Spring Security  
+- JWT Authentication  
+- Spring Data JPA (Hibernate)  
+- REST APIs  
+- MySQL / Oracle (Configurable)  
+- Maven  
 
-Spring Security
+### 🔹 Frontend
+- Angular  
+- TypeScript  
+- Tailwind CSS  
+- RxJS  
+- Angular Routing  
+- HTTP Interceptor (JWT Token Handling)  
 
-JWT Authentication
+---
 
-Spring Data JPA (Hibernate)
+## 👥 User Roles
 
-REST APIs
+### 🎧 Listener (User)
+- Register & Login  
+- Browse songs, albums, playlists  
+- Search by keyword or genre  
+- Create & manage playlists  
+- Mark songs as favorite  
+- View listening history  
+- View profile statistics  
+- Play songs using web player  
 
-MySQL / Oracle (Configurable)
+### 🎤 Artist
+- Create artist profile  
+- Upload songs  
+- Manage music content  
+- View engagement statistics  
 
-Maven
+---
 
-Frontend
+## 🔐 Authentication & Security
 
-Angular
+- JWT-based authentication  
+- Role-based authorization (ROLE_USER, ROLE_ARTIST, ROLE_ADMIN)  
+- Password encryption  
+- Angular HTTP Interceptor for token injection  
+- Protected routes  
 
-TypeScript
+---
 
-Tailwind CSS
+## 📂 Project Structure
 
-RxJS
-
-Angular Routing
-
-HTTP Interceptor (JWT Token Handling)
-
-👥 User Roles
-🎧 Listener (User)
-
-Register & Login
-
-Browse songs, albums, playlists
-
-Search by keyword or genre
-
-Create & manage playlists
-
-Mark songs as favorite
-
-View listening history
-
-View profile statistics
-
-Play songs using web player
-
-🎤 Artist
-
-Create artist profile
-
-Upload songs
-
-Manage music content
-
-View engagement statistics
-
-🔐 Authentication & Security
-
-JWT-based authentication
-
-Role-based authorization (ROLE_USER, ROLE_ARTIST, ROLE_ADMIN)
-
-Password encryption
-
-Angular HTTP Interceptor for token injection
-
-Protected routes
-
-📂 Project Structure
-Backend (Spring Boot)
+### Backend (Spring Boot)
 com.revature.revplay
 │
 ├── controller
