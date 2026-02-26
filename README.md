@@ -112,14 +112,20 @@ src/app
 └── pages
 ```
 
-⚙️ Setup Instructions
-🔹 Backend Setup
+---
 
-Clone the repository
+## ⚙️ Setup Instructions
 
-git clone [https://github.com/Dharam8218/RevPlay.git]
+### 🔹 Backend Setup
 
-Configure application.properties
+1. Clone the repository
+
+
+git clone https://github.com/Dharam8218/RevPlay.git
+
+
+2. Configure `application.properties`
+
 
 spring.datasource.url=jdbc:mysql://localhost:3306/revplay
 spring.datasource.username=your_username
@@ -131,87 +137,100 @@ spring.jpa.show-sql=true
 jwt.secret=your_secret_key
 jwt.expiration=86400000
 
-Run the application
+
+3. Run the application
+
 
 mvn spring-boot:run
 
+
 Backend runs on:
 
-http://localhost:8080
-🔹 Frontend Setup
 
-Navigate to frontend folder
+http://localhost:8080
+
+
+---
+
+### 🔹 Frontend Setup
+
+1. Navigate to frontend folder
+
 
 cd revplay-frontend
 
-Install dependencies
+
+2. Install dependencies
+
 
 npm install
 
-Run Angular application
+
+3. Run Angular application
+
 
 ng serve
 
+
 Frontend runs on:
 
+
 http://localhost:4200
-🔄 API Features
 
-User Registration & Login
 
-Song CRUD operations
+---
 
-Playlist management
+## 🔄 API Features
 
-Genre filtering
+- User Registration & Login  
+- Song CRUD operations  
+- Playlist management  
+- Genre filtering  
+- Artist management  
+- Favorites handling  
+- Secure endpoints with JWT  
 
-Artist management
+---
 
-Favorites handling
+## 🎵 Core Features Implemented
 
-Secure endpoints with JWT
+✔ User Authentication  
+✔ Role-Based Authorization  
+✔ Browse Songs by Genre  
+✔ Search Functionality  
+✔ Create & Manage Playlists  
+✔ Favorites System  
+✔ Music Player Component  
+✔ HTTP Interceptor  
+✔ Responsive UI  
 
-🎵 Core Features Implemented
+---
 
-✔ User Authentication
-✔ Role-Based Authorization
-✔ Browse Songs by Genre
-✔ Search Functionality
-✔ Create & Manage Playlists
-✔ Favorites System
-✔ Music Player Component
-✔ HTTP Interceptor
-✔ Responsive UI
+## 📊 Future Enhancements
 
-📊 Future Enhancements
+- Microservices Architecture  
+- Payment Integration (Premium Plans)  
+- Real-time Streaming Optimization  
+- Social Features (Follow Artists)  
+- Recommendation System  
+- Cloud Deployment (AWS/Azure)  
 
-Microservices Architecture
+---
 
-Payment Integration (Premium Plans)
+## 🧠 Learning Outcomes
 
-Real-time Streaming Optimization
+- Full-stack development  
+- Secure REST API design  
+- JWT Authentication & Authorization  
+- Angular State Management  
+- Component-based UI architecture  
+- Database design with JPA  
 
-Social Features (Follow Artists)
+---
 
-Recommendation System
+## 👨‍💻 Author
 
-Cloud Deployment (AWS/Azure)
+**Dharamveer Singh**  
+Java Full Stack Developer  
 
-🧠 Learning Outcomes
-
-Full-stack development
-
-Secure REST API design
-
-JWT Authentication & Authorization
-
-Angular State Management
-
-Component-based UI architecture
-
-Database design with JPA
-
-👨‍💻 Author
-
-Dharamveer Singh
-Java Full Stack Developer
+---
