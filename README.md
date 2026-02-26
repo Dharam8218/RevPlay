@@ -8,7 +8,16 @@
 
 RevPlay is a full-stack monolithic music streaming web application that allows users to explore, stream, and manage music content including songs, artists, albums, playlists, and podcasts. The platform supports role-based access for Listeners and Artists and includes a built-in web music player.
 
---
+---
+
+## 🔗 Source Code
+
+| Layer      | Technology       | Repository |
+|------------|------------------|------------|
+| Backend    | Spring Boot, JWT | [RevPlay Backend](https://github.com/Dharam8218/RevPlay) |
+| Frontend   | Angular, Tailwind | [RevPlay Frontend](https://github.com/Dharam8218/revplay-frontend) |
+
+---
 
 ## 🚀 Application Overview
 
